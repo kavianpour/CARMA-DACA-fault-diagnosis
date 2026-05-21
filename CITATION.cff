@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite the article below."
+title: "A class alignment method based on graph convolution neural network for bearing fault diagnosis in presence of missing data and changing working conditions"
+authors:
+  - family-names: Kavianpour
+    given-names: Mohammadreza
+    affiliation: "Tarbiat Modares University, Tehran, Iran"
+  - family-names: Ramezani
+    given-names: Amin
+    affiliation: "Tarbiat Modares University, Tehran, Iran"
+  - family-names: Beheshti
+    given-names: "Mohammad T. H."
+    affiliation: "Tarbiat Modares University, Tehran, Iran"
+preferred-citation:
+  type: article
+  title: "A class alignment method based on graph convolution neural network for bearing fault diagnosis in presence of missing data and changing working conditions"
+  authors:
+    - family-names: Kavianpour
+      given-names: Mohammadreza
+    - family-names: Ramezani
+      given-names: Amin
+    - family-names: Beheshti
+      given-names: "Mohammad T. H."
+  journal: "Measurement"
+  volume: 199
+  start: 111536
+  year: 2022
+  doi: "10.1016/j.measurement.2022.111536"

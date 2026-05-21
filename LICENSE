@@ -1,0 +1,29 @@
+Documentation License
+=====================
+
+The original text and documentation authored for this repository (the files
+in this repository's root and the `docs/` directory, excluding third-party
+material) are licensed under the Creative Commons Attribution 4.0 International
+License (CC BY 4.0).
+
+You are free to share and adapt this documentation, provided you give
+appropriate credit. Full license text: https://creativecommons.org/licenses/by/4.0/
+
+Figures
+-------
+The figures in `assets/` are reproduced from the published article:
+
+  M. Kavianpour, A. Ramezani, M. T. H. Beheshti,
+  "A class alignment method based on graph convolution neural network for
+  bearing fault diagnosis in presence of missing data and changing working
+  conditions," Measurement 199 (2022) 111536.
+  https://doi.org/10.1016/j.measurement.2022.111536
+
+  (c) 2022 Elsevier Ltd. All rights reserved.
+
+They are included here solely to document and explain the authors' own work.
+All rights in those figures remain with the copyright holder, and they are not
+covered by the CC BY 4.0 license above.
+
+Note: When code is added to this repository in the future, it will be released
+under a separate software license stated at that time.
