@@ -25,5 +25,14 @@ They are included here solely to document and explain the authors' own work.
 All rights in those figures remain with the copyright holder, and they are not
 covered by the CC BY 4.0 license above.
 
-Note: When code is added to this repository in the future, it will be released
-under a separate software license stated at that time.
+Source code
+-----------
+The source code in this repository (all `*.py` files and `run_on_colab.ipynb`)
+is released under the Creative Commons Attribution 4.0 International License
+(CC BY 4.0), the same terms as the documentation above: you may use, modify, and
+redistribute it provided you give appropriate credit by citing the paper.
+
+  Full license text: https://creativecommons.org/licenses/by/4.0/
+
+If you prefer a conventional software license for the code (e.g. MIT or
+Apache-2.0), replace this section and the corresponding line in the README.

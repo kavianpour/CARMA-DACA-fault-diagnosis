@@ -61,3 +61,48 @@ missing.
   missingness with a load/speed change — the full difficulty.
 
 See [`method.md`](method.md) for preprocessing and model details.
+
+---
+
+## Getting the data (this repo)
+
+```bash
+python download_cwru.py --root ./CWRU
+```
+
+[`download_cwru.py`](../download_cwru.py) fetches the exact 12 kHz **and** 48 kHz
+drive-end `.mat` files (plus the Normal baseline) and validates each by checking
+for a `*_DE_time` signal. If the download fails on your network, fetch the files
+manually from the CWRU Bearing Data Center and drop them — named like `97.mat`,
+`109.mat`, … — into `./CWRU/` (the loader also globs for `*<number>*.mat`).
+
+**Preprocessing order in [`data.py`](../data.py):** read DE signal → 1024-point
+non-overlapping windows (117/class) → per-window normalisation → (target only)
+zero-fill the multi-rate missing mask → semi-supervised split.
+
+### CWRU file numbers
+
+Index order = `[0 hp, 1 hp, 2 hp, 3 hp]`. The Normal (NC) class uses the 48 kHz
+baseline files for both sampling rates.
+
+**12 kHz drive-end (source A1/B1/C1/D1):**
+
+| Class | Files | | Class | Files |
+|---|---|---|---|---|
+| NC | 97, 98, 99, 100 | | OF014 | 197, 198, 199, 200 |
+| IF007 | 105, 106, 107, 108 | | OF021 | 234, 235, 236, 237 |
+| IF014 | 169, 170, 171, 172 | | BF007 | 118, 119, 120, 121 |
+| IF021 | 209, 210, 211, 212 | | BF014 | 185, 186, 187, 188 |
+| OF007 | 130, 131, 132, 133 | | BF021 | 222, 223, 224, 225 |
+
+**48 kHz drive-end (target C2/D2):**
+
+| Class | Files | | Class | Files |
+|---|---|---|---|---|
+| NC | 97, 98, 99, 100 | | OF014 | 201, 202, 203, 204 |
+| IF007 | 109, 110, 111, 112 | | OF021 | 238, 239, 240, 241 |
+| IF014 | 174, 175, 176, 177 | | BF007 | 122, 123, 124, 125 |
+| IF021 | 213, 214, 215, 217 | | BF014 | 189, 190, 191, 192 |
+| OF007 | 135, 136, 137, 138 | | BF021 | 226, 227, 228, 229 |
+
+(For IF021 at 48 kHz, file 216 is absent in CWRU; 217 is the 3 hp file.)

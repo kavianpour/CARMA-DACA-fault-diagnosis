@@ -126,3 +126,57 @@ t-SNE visualizations across layers (input → GAP → ARMA3 → FC6) show the fe
 progressing from tangled to class-separable and domain-invariant. A Friedman +
 post-hoc Nemenyi test (CD = 2.45, α = 0.05, 24 tasks) confirms CARMA-DACA's
 first-place ranking is statistically significant.
+
+---
+
+## 6. Implementation map (this repo)
+
+The code mirrors the sections above. Every deep method is the **same backbone**
+with switches in [`methods.py`](../methods.py); the proposed method is the default.
+
+| Method | `use_graph` / `graph_type` | `use_adversarial` | `align_loss` | layers |
+|---|---|---|---|---|
+| WDCNN | — (wide-kernel CNN) | no | none | — |
+| CARMA | yes / arma | no | none | — |
+| DTLCNN | no | no | mkmmd | FC4, FC5 |
+| DSACNN | no | no | lmmd (single-kernel) | FC4, FC5 |
+| HDAN | no | yes | hdan (Wasserstein + MK-MMD) | FC4, FC5 |
+| DAGCN | yes / cheby | yes | mmd | FC5 |
+| CARMA-M | yes / arma | yes | mkmmd | FC4, FC5 |
+| CARMA-C | yes / arma | yes | coral | FC4, FC5 |
+| **CARMA-DACA** | **yes / arma** | **yes** | **mklmmd** | **FC4, FC5** |
+
+**Where each piece lives:** spatial CNN + GGL + ARMA/Cheby graph block, GRL
+discriminator and the three FC heads are in [`model.py`](../model.py); MK-LMMD
+(and single-kernel LMMD) in [`mklmmd.py`](../mklmmd.py); MMD / MK-MMD / CORAL /
+sliced-Wasserstein in [`da_losses.py`](../da_losses.py); the 3-loss training loop
+in [`train.py`](../train.py); the CWRU loader, missing-data simulator, and
+semi-supervised split in [`data.py`](../data.py).
+
+**Objective sign.** Section 3 writes `L_total = L_C − α·L_DA + β·L_CA` (the
+min–max over the discriminator). The code realises the `−α` term with a
+**Gradient Reversal Layer**: the discriminator minimises a normal cross-entropy
+`+α·L_DA`, while the GRL flips its gradient into the feature extractor, which is
+exactly the two-step adversarial optimisation — implemented in a single backward
+pass.
+
+**Documented assumptions (all in [`config.py`](../config.py)).**
+
+| Ambiguity in the paper | Choice in this repo | Knob |
+|---|---|---|
+| "three stacked ARMA layers" vs "third-order ARMA filter" | three sequential `ARMAConv` layers, each `num_stacks=3`, `num_layers=1` | `arma_num_stacks`, `arma_num_layers` |
+| how missing points enter the CNN | normalise per window, then zero-fill the dropped points (missing = 0) | `missing_ratio`, `apply_missing_to_target`, `normalize` |
+| Gaussian kernel parameterisation | `k(x,y)=exp(-‖x-y‖²/(2σ))` with σ ∈ {0.001,0.01,1,10,100} | `mk_sigmas` |
+| evaluation set | transductive: accuracy on the **unlabelled** target | `eval_on_full_target` (set `True` to score the full 1170-sample target, which matches the per-class counts in the Fig. 5 / Fig. 9 confusion matrices) |
+
+> **Note on the 80/20 split.** The dataset description mentions a 80% / 20%
+> train/test split per speed, while the confusion matrices report all 117
+> samples/class (1170 total) for the target. This repo implements the
+> semi-supervised protocol directly — source = all source samples; target =
+> labelled fraction (0/1/5/10%) + unlabelled remainder; score the unlabelled
+> remainder (or the full target with `eval_on_full_target=True`). Adjust to taste
+> in `data.py` if you want a strict 80/20 hold-out instead.
+
+No result numbers are hard-coded; every metric comes from a real training run, so
+exact values depend on seed, library versions, and hardware (the paper averages
+10 runs).
